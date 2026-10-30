@@ -15,15 +15,17 @@ const email = 'ndvsim@gmail.com';
 ---
 <Base>
   <header class="hero">
-    <svg class="rings" viewBox="0 0 800 800" fill="none" stroke="currentColor" aria-hidden="true">
-      <circle cx="400" cy="400" r="40" fill="currentColor" stroke="none" />
-      <circle cx="400" cy="400" r="130" />
-      <circle cx="400" cy="400" r="230" />
-      <circle cx="400" cy="400" r="330" />
-      <circle cx="400" cy="400" r="395" />
-    </svg>
     <div class="wrap">
-      <h1>Nadav<br />Simchai</h1>
+      <h1>
+        Nadav<br />Simchai<span class="origin" aria-hidden="true">
+          <svg class="rings" viewBox="0 0 800 800" fill="none" stroke="currentColor">
+            <circle cx="400" cy="400" r="130" />
+            <circle cx="400" cy="400" r="230" />
+            <circle cx="400" cy="400" r="330" />
+            <circle cx="400" cy="400" r="395" />
+          </svg>
+        </span>
+      </h1>
       <p class="intro">
         I'm a computer science graduate from Ben-Gurion University, looking for a junior full-stack or software engineering role. These are the projects I'm proudest of.
       </p>
@@ -45,7 +47,7 @@ const email = 'ndvsim@gmail.com';
           {g.items.map(({ p, Content }) => (
             <li class="row">
               <div class="wrap row-grid">
-                <h3>{p.data.title}</h3>
+                <h3>{p.data.repo ? <a href={p.data.repo} tabindex="-1" aria-hidden="true">{p.data.title}</a> : p.data.title}</h3>
                 <div class="text">
                   <p class="summary">{p.data.summary}</p>
                   <div class="body"><Content /></div>
@@ -57,7 +59,11 @@ const email = 'ndvsim@gmail.com';
                     {p.data.status === 'in-progress' && <span class="wip">Still in progress</span>}
                   </p>
                 </div>
-                <div class="fig"><Figure name={p.data.figure} /></div>
+                <div class="fig">
+                  {p.data.image
+                    ? <img class="shot" src={p.data.image} alt={p.data.imageAlt ?? ''} width="1120" height="1800" loading="lazy" />
+                    : <Figure name={p.data.figure} />}
+                </div>
               </div>
             </li>
           ))}
@@ -78,7 +84,8 @@ const email = 'ndvsim@gmail.com';
 
   .hero { position: relative; overflow: hidden; padding-block: clamp(56px, 12vw, 150px) clamp(48px, 9vw, 110px); }
   .hero .wrap { position: relative; }
-  .rings { position: absolute; right: -14%; top: 50%; width: min(120vw, 980px); translate: 0 -50%; color: var(--soft); opacity: 0.35; }
+  .origin { position: relative; display: inline-block; width: 0.16em; height: 0.16em; margin-left: 0.05em; border-radius: 50%; background: var(--signal); }
+  .rings { position: absolute; left: 50%; top: 50%; width: min(150vw, 1100px); translate: -50% -50%; color: var(--soft); opacity: 0.35; pointer-events: none; }
   .rings circle { stroke-width: 2; }
   h1 {
     margin: 0;
@@ -93,7 +100,7 @@ const email = 'ndvsim@gmail.com';
   .contact a { padding-block: 10px; }
 
   .group { padding-top: clamp(32px, 6vw, 72px); }
-  h2 { margin: 0 0 20px; font-size: clamp(1.25rem, 2vw, 1.5rem); font-weight: 600; color: var(--soft); }
+  h2 { margin: 0 0 24px; font-size: clamp(1.75rem, 3.2vw, 2.5rem); line-height: 1.1; font-weight: 700; letter-spacing: -0.02em; font-variation-settings: 'wdth' 85, 'opsz' 48; }
 
   .rows { list-style: none; margin: 0; padding: 0; }
   .row { --row-bg: var(--blue); background: var(--row-bg); border-top: 2px solid var(--paper); padding-block: clamp(28px, 4.5vw, 52px); transition: background-color 0.2s, color 0.2s; }
@@ -116,6 +123,8 @@ const email = 'ndvsim@gmail.com';
     font-variation-settings: 'wdth' 82, 'opsz' 72;
     text-wrap: balance;
   }
+  h3 a { text-decoration: none; }
+  h3 a:hover { text-decoration: underline; text-decoration-thickness: 4px; }
   .summary { margin: 0 0 12px; font-size: 1.25rem; line-height: 1.3; font-weight: 600; }
   .body { max-width: 62ch; text-wrap: pretty; }
   .body :global(p) { margin: 0 0 12px; }
@@ -128,6 +137,7 @@ const email = 'ndvsim@gmail.com';
   .row:focus-within .fig { color: var(--ink); }
   @media (hover: hover) { .row:hover .fig { color: var(--ink); } }
   .fig :global(svg) { display: block; width: 100%; height: auto; }
+  .shot { display: block; width: 100%; height: auto; border: 2px solid currentColor; border-radius: 14px; }
 
   @media (min-width: 760px) {
     .row-grid { grid-template-columns: 1fr 200px; }
@@ -144,10 +154,11 @@ const email = 'ndvsim@gmail.com';
 
   @media (prefers-reduced-motion: no-preference) {
     .rings circle { transform-origin: 400px 400px; animation: ping 1.6s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
-    .rings circle:nth-child(2) { animation-delay: 0.1s; }
-    .rings circle:nth-child(3) { animation-delay: 0.22s; }
-    .rings circle:nth-child(4) { animation-delay: 0.34s; }
-    .rings circle:nth-child(5) { animation-delay: 0.46s; }
+    .rings circle:nth-child(1) { animation-delay: 0.1s; }
+    .rings circle:nth-child(2) { animation-delay: 0.22s; }
+    .rings circle:nth-child(3) { animation-delay: 0.34s; }
+    .rings circle:nth-child(4) { animation-delay: 0.46s; }
+    .origin { animation: ping 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
     @keyframes ping { from { transform: scale(0.15); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     .row:hover .fig :global(.sweep), .row:focus-within .fig :global(.sweep) { animation: sweep 1.8s linear infinite; }
     @keyframes sweep { from { translate: 0 0; } to { translate: 136px 0; } }

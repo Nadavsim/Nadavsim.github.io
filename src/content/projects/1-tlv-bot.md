@@ -6,6 +6,8 @@ tech: [React, TypeScript, FastAPI, MongoDB, Claude API, Google OAuth, Azure]
 repo: https://github.com/Nadavsim/tlv-map-bot
 demo: https://nadav-tlv-bot-fqfnfzbyekatfgfb.israelcentral-01.azurewebsites.net/
 note: Works without signing in; favorites and suggesting spots need Google sign-in
+image: /screens/tlv-bot.png
+imageAlt: The TLV Bot home screen, with location and walk or drive toggles, three craving suggestions and a message box
 figure: tlv
 order: 1
 ---
