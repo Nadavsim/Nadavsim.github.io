@@ -1,7 +1,7 @@
 ---
 title: Network Security Scanner
 summary: "A Python recon tool: ARP discovery, TCP/UDP port scanning, service detection and automatic CVE lookup."
-kind: personal
+kind: university
 tech: [Python, scapy, nmap, asyncio, pytest, NVD API]
 repo: https://github.com/Nadavsim/Network-Security-Scanner
 figure: scanner
