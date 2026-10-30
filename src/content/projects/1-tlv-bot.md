@@ -4,6 +4,7 @@ summary: A web chatbot that finds the nearest spot from my own curated map of Te
 kind: personal
 tech: [React, TypeScript, FastAPI, MongoDB, Claude API, Google OAuth, Azure]
 repo: https://github.com/Nadavsim/tlv-map-bot
+demo: https://nadav-tlv-bot-fqfnfzbyekatfgfb.israelcentral-01.azurewebsites.net/
 figure: tlv
 order: 1
 ---
