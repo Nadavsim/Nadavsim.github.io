@@ -12,6 +12,8 @@ const projects = defineCollection({
     repo: z.string().url().optional(),
     demo: z.string().url().optional(),
     status: z.enum(['done', 'in-progress']).default('done'),
+    note: z.string().optional(),
+    figure: z.enum(['tlv', 'coffee', 'scanner', 'cluster', 'nlp', 'notes']),
     order: z.number().default(100),
   }),
 });
