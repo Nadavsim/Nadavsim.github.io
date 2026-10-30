@@ -1,0 +1,26 @@
+---
+const { title = 'Nadav Simchai' } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <main><slot /></main>
+  </body>
+</html>
+<style is:global>
+  :root {
+    --bg: #fafaf8; --fg: #1d1d1b; --muted: #62625c; --card: #fff; --line: #e4e4de; --accent: #1f5fbf;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #151514; --fg: #ececE6; --muted: #a0a099; --card: #1e1e1c; --line: #32322f; --accent: #7fb0ff; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.6 system-ui, sans-serif; }
+  main { max-width: 960px; margin: 0 auto; padding: 48px 16px; }
+  a { color: var(--accent); }
+</style>

@@ -1,0 +1,52 @@
+---
+import { getCollection } from 'astro:content';
+import { render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+
+const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+const rendered = await Promise.all(projects.map(async (p) => ({ p, Content: (await render(p)).Content })));
+const github = 'https://github.com/Nadavsim';
+---
+<Base>
+  <header>
+    <h1>Nadav Simchai</h1>
+    <p class="lead">Computer science student building things with Python, TypeScript and Java: bots, scanners, distributed systems and web apps.</p>
+    <p><a href={github}>GitHub</a></p>
+  </header>
+
+  <h2>Projects</h2>
+  <ul class="grid">
+    {rendered.map(({ p, Content }) => (
+      <li class="card">
+        <div class="meta">
+          <span>{p.data.kind === 'university' ? 'University' : 'Personal'}</span>
+          {p.data.status === 'in-progress' && <span class="wip">In progress</span>}
+        </div>
+        <h3>{p.data.title}</h3>
+        <p class="summary">{p.data.summary}</p>
+        <div class="body"><Content /></div>
+        <ul class="tech">{p.data.tech.map((t) => <li>{t}</li>)}</ul>
+        <p class="links">
+          {p.data.repo && <a href={p.data.repo}>Repository</a>}
+          {p.data.demo && <a href={p.data.demo}>Live demo</a>}
+        </p>
+      </li>
+    ))}
+  </ul>
+</Base>
+
+<style>
+  h1 { margin: 0 0 4px; font-size: 2.2rem; }
+  .lead { color: var(--muted); max-width: 60ch; }
+  .grid { list-style: none; padding: 0; display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: flex; flex-direction: column; }
+  .card h3 { margin: 4px 0 6px; }
+  .meta { font-size: .8rem; color: var(--muted); display: flex; gap: 8px; text-transform: uppercase; letter-spacing: .04em; }
+  .wip { color: var(--accent); }
+  .summary { margin: 0 0 8px; }
+  .body { color: var(--muted); font-size: .93rem; flex: 1; }
+  .body :global(p) { margin: 0 0 8px; }
+  .tech { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0 8px; }
+  .tech li { font-size: .78rem; border: 1px solid var(--line); border-radius: 999px; padding: 1px 9px; }
+  .links { display: flex; gap: 14px; margin: 0; }
+</style>
