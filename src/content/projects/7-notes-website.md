@@ -3,7 +3,7 @@ title: Notes Website
 summary: A full-stack notes site with user accounts, pagination and an AI assistant that answers from your notes.
 kind: university
 tech: [TypeScript, React, Express, MongoDB, JWT, Playwright, Jest]
-note: Source is private (course requirement)
+repo: https://github.com/Nadavsim/fullstack-notes-app
 figure: notes
 order: 7
 ---
