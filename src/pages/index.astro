@@ -45,7 +45,7 @@ const email = 'ndvsim@gmail.com';
         </div>
         <ul class="rows">
           {g.items.map(({ p, Content }) => (
-            <li class="row">
+            <li class="row" data-shots={p.data.shots.length || undefined}>
               <div class="wrap row-grid">
                 <h3>{p.data.repo ? <a href={p.data.repo} tabindex="-1" aria-hidden="true">{p.data.title}</a> : p.data.title}</h3>
                 <div class="text">
@@ -60,9 +60,19 @@ const email = 'ndvsim@gmail.com';
                   </p>
                 </div>
                 <div class="fig">
-                  {p.data.image
-                    ? <img class="shot" src={p.data.image} alt={p.data.imageAlt ?? ''} width="1120" height="1800" loading="lazy" />
-                    : <Figure name={p.data.figure} />}
+                  <div class="viewport" style={p.data.shots.length ? `--ratio: ${p.data.shots[0].w} / ${p.data.shots[0].h}` : undefined}>
+                    <div class="track">
+                      <div class="panel"><Figure name={p.data.figure} /></div>
+                      {p.data.shots.map((shot) => (
+                        <a class="panel" href={shot.src} target="_blank" rel="noopener" inert>
+                          <img class="shot" src={shot.src} alt={shot.alt} width={shot.w} height={shot.h} loading="lazy" />
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                  {p.data.shots.length > 0 && (
+                    <button class="flip" type="button" data-label={p.data.shotsLabel} data-title={p.data.title}>See {p.data.shotsLabel}</button>
+                  )}
                 </div>
               </div>
             </li>
@@ -103,13 +113,13 @@ const email = 'ndvsim@gmail.com';
   h2 { margin: 0 0 24px; font-size: clamp(1.75rem, 3.2vw, 2.5rem); line-height: 1.1; font-weight: 700; letter-spacing: -0.02em; font-variation-settings: 'wdth' 85, 'opsz' 48; }
 
   .rows { list-style: none; margin: 0; padding: 0; }
-  .row { --row-bg: var(--blue); background: var(--row-bg); border-top: 2px solid var(--paper); padding-block: clamp(28px, 4.5vw, 52px); transition: background-color 0.2s, color 0.2s; }
+  .row { --row-bg: var(--blue); --row-text: var(--paper); background: var(--row-bg); border-top: 2px solid var(--paper); padding-block: clamp(28px, 4.5vw, 52px); transition: background-color 0.2s, color 0.2s; }
   .row:last-child { border-bottom: 2px solid var(--paper); }
-  .row:focus-within { --row-bg: var(--signal); color: var(--ink); }
+  .row:focus-within { --row-bg: var(--signal); --row-text: var(--ink); color: var(--ink); }
   .row:focus-within .tech li { border-color: var(--ink); }
-  .row:focus-within a:focus-visible { outline-color: var(--ink); }
+  .row:focus-within :is(a, .flip):focus-visible { outline-color: var(--ink); }
   @media (hover: hover) {
-    .row:hover { --row-bg: var(--signal); color: var(--ink); }
+    .row:hover { --row-bg: var(--signal); --row-text: var(--ink); color: var(--ink); }
     .row:hover .tech li { border-color: var(--ink); }
   }
 
@@ -133,24 +143,34 @@ const email = 'ndvsim@gmail.com';
   .links { display: flex; flex-wrap: wrap; align-items: center; gap: 0 28px; margin: 0; font-weight: 600; }
   .links a { padding-block: 10px; }
   .links .wip { opacity: 0.85; }
-  .fig { width: min(220px, 56%); color: var(--soft); transition: color 0.2s; }
+  .fig { width: min(260px, 70%); color: var(--soft); transition: color 0.2s; }
+  .viewport { overflow: hidden; aspect-ratio: var(--ratio, 4 / 3); border-radius: 14px; }
+  .track { display: flex; height: 100%; transform: translateX(calc(var(--i, 0) * -100%)); transition: transform 0.55s cubic-bezier(0.2, 0.7, 0.2, 1); }
+  .panel { flex: 0 0 100%; display: grid; place-items: center; min-width: 0; }
+  a.panel { text-decoration: none; }
+  a.panel:focus-visible { outline-offset: -4px; }
+  .row[data-shots] { cursor: pointer; }
+  .flip { margin: 6px 0 0; padding: 8px 0; background: none; border: 0; color: var(--row-text); font: inherit; font-weight: 600; text-align: left; text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.2em; cursor: pointer; }
+  .flip:focus-visible { outline: 3px solid var(--signal); outline-offset: 3px; border-radius: 2px; }
   .row:focus-within .fig { color: var(--ink); }
   @media (hover: hover) { .row:hover .fig { color: var(--ink); } }
   .fig :global(svg) { display: block; width: 100%; height: auto; }
-  .shot { display: block; width: 100%; height: auto; border: 2px solid currentColor; border-radius: 14px; }
+  .shot { display: block; width: 100%; height: 100%; object-fit: contain; border: 2px solid currentColor; border-radius: 14px; }
 
   @media (min-width: 760px) {
-    .row-grid { grid-template-columns: 1fr 200px; }
+    .row-grid { grid-template-columns: 1fr 240px; }
     h3 { grid-column: 1 / -1; }
     .fig { width: 100%; align-self: start; }
   }
   @media (min-width: 1100px) {
-    .row-grid { grid-template-columns: 5fr 5fr 2fr; gap: 40px; align-items: start; }
+    .row-grid { grid-template-columns: 4fr 5fr 3fr; gap: 40px; align-items: start; }
     h3 { grid-column: auto; }
   }
 
   footer { padding-block: 56px 72px; }
   footer p { margin: 0; font-size: 1.25rem; font-weight: 600; }
+
+  @media (prefers-reduced-motion: reduce) { .track { transition: none; } }
 
   @media (prefers-reduced-motion: no-preference) {
     .rings circle { transform-origin: 400px 400px; animation: ping 1.6s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
@@ -164,3 +184,29 @@ const email = 'ndvsim@gmail.com';
     @keyframes sweep { from { translate: 0 0; } to { translate: 136px 0; } }
   }
 </style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.row[data-shots]').forEach((row) => {
+    const track = row.querySelector<HTMLElement>('.track')!;
+    const panels = Array.from(track.children) as HTMLElement[];
+    const flip = row.querySelector<HTMLButtonElement>('.flip')!;
+    const { label, title } = flip.dataset;
+    const last = panels.length - 1;
+    let index = 0;
+
+    const show = (next: number) => {
+      index = next > last ? 0 : next;
+      track.style.setProperty('--i', String(index));
+      panels.forEach((panel, i) => panel.toggleAttribute('inert', i !== index));
+      flip.textContent = index === 0 ? `See ${label}` : index < last ? `Next (${index} of ${last})` : 'Back to the drawing';
+      flip.setAttribute('aria-label', `${flip.textContent}, ${title}`);
+    };
+
+    show(0);
+    flip.addEventListener('click', () => show(index + 1));
+    row.addEventListener('click', (event) => {
+      if ((event.target as Element).closest('a, button') || window.getSelection()?.toString()) return;
+      show(index + 1);
+    });
+  });
+</script>
